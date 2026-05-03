@@ -12,92 +12,84 @@
         .tab-view { display: none; }
         .tab-view.active { display: block; animation: slideUp 0.4s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        input[type="text"] { border: 2px solid #cbd5e1; border-radius: 8px; padding: 8px; width: 100%; max-width: 200px; text-align: center; font-weight: bold; color: #4f46e5; outline: none; }
-        input[type="text"]:focus { border-color: #6366f1; background-color: #eef2ff; }
+        input[type="text"] { border: 2px solid #cbd5e1; border-radius: 8px; padding: 8px; width: 100%; max-width: 250px; text-align: center; font-weight: bold; color: #4f46e5; outline: none; }
         .correct { background-color: #d1fae5 !important; color: #065f46; border-color: #10b981 !important; }
         .incorrect { background-color: #fee2e2 !important; color: #991b1b; border-color: #ef4444 !important; }
+        .user-info-active { border: 2px solid #6366f1; background-color: #eef2ff; }
     </style>
 </head>
 <body class="text-slate-800 p-4">
 
-    <!-- KHU VỰC TRANG CHỦ (HIỆN NGAY KHI MỞ TRÊN ĐIỆN THOẠI) -->
-    <section id="tab-dashboard" class="tab-view active space-y-6">
-        <div class="bg-indigo-600 text-white p-8 rounded-[2rem] shadow-xl text-center">
-            <h2 class="text-2xl font-bold uppercase mb-1">LÝ TÚ THANH</h2>
-            <p class="text-sm opacity-80 font-bold">Lớp: C25DC1 & LC25BT2</p>
-        </div>
-
-        <div class="space-y-4">
-            <!-- NÚT 1: LÀM BÀI TẬP -->
-            <button onclick="showTab('practice')" class="w-full bg-white p-8 rounded-3xl border-4 border-indigo-200 shadow-lg flex flex-col items-center active:scale-95 transition-all">
-                <span class="text-4xl mb-2">✍️</span>
-                <span class="text-xl font-black text-indigo-700 uppercase">Bấm để làm bài tập</span>
-                <span class="text-xs text-slate-400 mt-1 font-bold">(Bài tập 1, 2 và Story Time)</span>
-            </button>
-
-            <!-- NÚT 2: LÀM QUIZ -->
-            <button onclick="showTab('game')" class="w-full bg-white p-8 rounded-3xl border-4 border-orange-200 shadow-lg flex flex-col items-center active:scale-95 transition-all">
-                <span class="text-4xl mb-2">🎮</span>
-                <span class="text-xl font-black text-orange-600 uppercase">Thử thách 30 câu</span>
-                <span class="text-xs text-slate-400 mt-1 font-bold">(Bắt đầu trò chơi)</span>
-            </button>
-
-            <!-- NÚT 3: XEM LÝ THUYẾT -->
-            <button onclick="showTab('lessons')" class="w-full bg-white p-8 rounded-3xl border-4 border-emerald-200 shadow-lg flex flex-col items-center active:scale-95 transition-all">
-                <span class="text-4xl mb-2">📖</span>
-                <span class="text-xl font-black text-emerald-600 uppercase">Xem lý thuyết</span>
-            </button>
-        </div>
-        
-        <!-- HIỂN THỊ MÃ QR ĐỂ CÔ CHIẾU LÊN BẢNG -->
-        <div class="bg-white p-6 rounded-3xl text-center shadow-md">
-            <p class="text-xs font-bold text-slate-400 mb-4 uppercase">Mã QR truy cập bài học</p>
-            <div id="qrcode" class="flex justify-center mx-auto"></div>
-        </div>
-    </section>
-
-    <!-- KHU VỰC BÀI TẬP (PRACTICE) -->
-    <section id="tab-practice" class="tab-view space-y-6">
-        <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm sticky top-0 z-10">
-            <button onclick="showTab('dashboard')" class="text-indigo-600 font-bold">← TRANG CHỦ</button>
-            <button onclick="checkEx3()" class="bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold">CHẤM ĐIỂM</button>
-        </div>
-        <div class="bg-white p-6 rounded-3xl shadow-lg border border-indigo-100">
-            <h3 class="text-xl font-bold text-indigo-600 mb-4 uppercase">Story Time (20 câu)</h3>
-            <div id="story-container" class="leading-relaxed italic text-slate-700 bg-blue-50 p-6 rounded-2xl text-lg text-justify">
-                <!-- Nội dung chèn tự động -->
+    <!-- BẢNG NHẬP TÊN (HIỆN ĐẦU TIÊN) -->
+    <div id="login-screen" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md text-center space-y-6">
+            <h2 class="text-2xl font-bold text-indigo-600 uppercase">Thông tin học sinh</h2>
+            <div class="space-y-4">
+                <input type="text" id="student-name" class="user-info-active w-full" placeholder="Nhập Họ và Tên của em">
+                <select id="student-class" class="w-full p-3 border-2 border-slate-200 rounded-xl font-bold text-slate-600 outline-none focus:border-indigo-500">
+                    <option value="">-- Chọn lớp học --</option>
+                    <option value="C25DC1">C25DC1</option>
+                    <option value="LC25BT2">LC25BT2</option>
+                </select>
             </div>
+            <button onclick="startApp()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg hover:bg-indigo-700 transition">BẮT ĐẦU LÀM BÀI</button>
         </div>
-    </section>
+    </div>
 
-    <!-- KHU VỰC LÝ THUYẾT (LESSONS) -->
-    <section id="tab-lessons" class="tab-view space-y-6">
-        <button onclick="showTab('dashboard')" class="text-indigo-600 font-bold bg-white px-4 py-2 rounded-xl shadow-sm">← QUAY LẠI</button>
-        <div class="bg-white p-8 rounded-3xl shadow-lg">
-            <h2 class="text-2xl font-bold text-indigo-700 border-b-4 border-indigo-600 inline-block pb-1 mb-6 uppercase">Tính từ bất quy tắc</h2>
-            <div class="space-y-4 text-xl">
-                <p class="p-4 bg-indigo-50 rounded-xl"><strong>Good</strong> ➔ <span class="text-indigo-600">Better</span> ➔ <span class="text-emerald-600">The Best</span></p>
-                <p class="p-4 bg-indigo-50 rounded-xl"><strong>Bad</strong> ➔ <span class="text-indigo-600">Worse</span> ➔ <span class="text-emerald-600">The Worst</span></p>
-                <p class="p-4 bg-indigo-50 rounded-xl"><strong>Far</strong> ➔ <span class="text-indigo-600">Farther</span> ➔ <span class="text-emerald-600">The Farthest</span></p>
+    <!-- NỘI DUNG CHÍNH (ẨN KHI CHƯA NHẬP TÊN) -->
+    <div id="main-app" class="opacity-0 pointer-events-none transition-opacity duration-500">
+        <!-- Dashboard -->
+        <section id="tab-dashboard" class="tab-view active space-y-6">
+            <div class="bg-indigo-600 text-white p-8 rounded-[2rem] shadow-xl text-center">
+                <h2 class="text-2xl font-bold uppercase mb-1" id="display-name">Lý Tú Thanh</h2>
+                <p class="text-sm opacity-80 font-bold uppercase" id="display-class">Lớp: C25DC1 & LC25BT2</p>
             </div>
-        </div>
-    </section>
 
-    <!-- KHU VỰC TRÒ CHƠI (GAME) -->
-    <section id="tab-game" class="tab-view space-y-6 text-center py-10">
-        <button onclick="showTab('dashboard')" class="text-indigo-600 font-bold bg-white px-4 py-2 rounded-xl shadow-sm">← QUAY LẠI</button>
-        <div class="bg-white p-10 rounded-[3rem] shadow-xl">
-            <h2 class="text-3xl font-black text-orange-500 mb-4 uppercase">🎮 TRÒ CHƠI QUIZ</h2>
-            <p class="text-slate-500 mb-8">Hệ thống đang chuẩn bị 30 câu hỏi cho các em!</p>
-            <div class="p-10 border-4 border-dashed border-slate-200 rounded-3xl">
-                <p class="text-slate-300 italic font-bold uppercase">Sẵn sàng...</p>
+            <div class="space-y-4">
+                <button onclick="showTab('practice')" class="w-full bg-white p-8 rounded-3xl border-4 border-indigo-200 shadow-lg flex flex-col items-center">
+                    <span class="text-4xl mb-2">✍️</span>
+                    <span class="text-xl font-black text-indigo-700 uppercase">Làm bài tập ngay</span>
+                </button>
+                <div class="bg-white p-6 rounded-3xl text-center shadow-md">
+                    <p class="text-xs font-bold text-slate-400 mb-4 uppercase">Mã QR truy cập</p>
+                    <div id="qrcode" class="flex justify-center mx-auto"></div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Practice -->
+        <section id="tab-practice" class="tab-view space-y-6">
+            <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm sticky top-0 z-10">
+                <button onclick="showTab('dashboard')" class="text-indigo-600 font-bold">← QUAY LẠI</button>
+                <button onclick="checkEx3()" class="bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold">CHẤM ĐIỂM</button>
+            </div>
+            <div class="bg-white p-6 rounded-3xl shadow-lg border border-indigo-100">
+                <h3 class="text-xl font-bold text-indigo-600 mb-4 uppercase">Story Time (20 câu)</h3>
+                <div id="story-container" class="leading-relaxed italic text-slate-700 bg-blue-50 p-6 rounded-2xl text-lg text-justify"></div>
+            </div>
+        </section>
+    </div>
 
     <script>
         const STORY_ANSWERS = ["worst", "later", "colder", "more crowded", "most frustrating", "farther", "more tired", "tallest", "angrier", "most reliable", "sadder", "cheapest", "worse", "more stressful", "most important", "more exhausted", "most beautiful", "better", "most difficult", "brighter"];
-        const STORY_RAW = "Yesterday was the (1. bad) [1] day of my life. I woke up (2. late) [2] than usual. The weather was (3. cold) [3] than it had been all week. I took the bus, but it was (4. crowded) [4] than a Sunday bus. The (5. frustrating) [5] part was when the bus broke down. I had to walk, and the (6. far) [6] I walked, the (7. tired) [7] I became. My office is in the (8. tall) [8] building in the city. When I arrived, my boss was (9. angry) [9] than a bear. He said I was the (10. reliable) [10] worker he had. I felt (11. sad) [11] than ever. At lunch, I bought the (12. cheap) [12] sandwich, but it tasted (13. awful) [13] than cardboard. The afternoon was even (14. stressful) [14]. I had to finish the (15. important) [15] report of the year. By 5 PM, I was (16. exhausted) [16] than my colleagues. On my way home, I saw the (17. beautiful) [17] sunset, which made me feel a bit (18. good) [18]. I realized that even the (19. difficult) [19] days end eventually. Tomorrow will be (20. bright) [20]!";
+        const STORY_RAW = "Yesterday was the (1. bad) [1] day of my life. I woke up (2. late) [2] than usual. The weather was (3. cold) [3] than it had been all week. I took the bus, but it was (4. crowded) [4] than a Sunday bus. The (5. frustrating) [5] part was khi xe buýt hỏng. I had to walk, and the (6. far) [6] I walked, the (7. tired) [7] I became. My office is in the (8. tall) [8] building in the city. When I arrived, my boss was (9. angry) [9] than a bear. He said I was the (10. reliable) [10] worker he had. I felt (11. sad) [11] than ever. At lunch, I bought the (12. cheap) [12] sandwich, but it tasted (13. awful) [13] than cardboard. The afternoon was even (14. stressful) [14]. I had to finish the (15. important) [15] report of the year. By 5 PM, I was (16. exhausted) [16] than my colleagues. On my way home, I saw the (17. beautiful) [17] sunset, which made me feel a bit (18. good) [18]. I realized that even the (19. difficult) [19] days end eventually. Tomorrow will be (20. bright) [20]!";
+
+        function startApp() {
+            const name = document.getElementById('student-name').value.trim();
+            const className = document.getElementById('student-class').value;
+            
+            if (name === "" || className === "") {
+                alert("Vui lòng nhập tên và chọn lớp trước khi làm bài nhé!");
+                return;
+            }
+
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('display-class').innerText = "Lớp: " + className;
+            document.getElementById('login-screen').classList.add('hidden');
+            const mainApp = document.getElementById('main-app');
+            mainApp.classList.remove('opacity-0', 'pointer-events-none');
+            mainApp.classList.add('opacity-100');
+        }
 
         function showTab(tabId) {
             document.querySelectorAll('.tab-view').forEach(t => t.classList.remove('active'));
@@ -106,9 +98,7 @@
         }
 
         window.onload = function() {
-            // TẠO MÃ QR DỰA TRÊN ĐỊA CHỈ TRANG WEB
             new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 150, height: 150 });
-            
             let storyHtml = STORY_RAW;
             for(let i=0; i<20; i++) {
                 storyHtml = storyHtml.replace(`[${i+1}]`, `<input type="text" id="ex3-in-${i}" placeholder="?">`);
@@ -118,12 +108,13 @@
 
         function checkEx3() {
             let score = 0;
+            const name = document.getElementById('display-name').innerText;
             STORY_ANSWERS.forEach((ans, i) => {
                 const inp = document.getElementById(`ex3-in-${i}`);
                 if(inp.value.trim().toLowerCase() === ans.toLowerCase()) { score++; inp.className = "correct"; }
                 else { inp.className = "incorrect"; }
             });
-            alert("Cô đã chấm điểm xong! Các em đúng được " + score + "/20 câu.");
+            alert("Chúc mừng em " + name + "! Em đã đúng " + score + "/20 câu.");
         }
     </script>
 </body>
