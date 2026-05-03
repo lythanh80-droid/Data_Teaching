@@ -14,7 +14,7 @@
         .tab-view { display: none; }
         .tab-view.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        input[type="text"] { border-bottom: 2px solid #e2e8f0; transition: all 0.3s ease; outline: none; }
+        input[type="text"] { border-bottom: 2px solid #e2e8f0; transition: all 0.3s ease; outline: none; background: transparent; }
         input[type="text"]:focus { border-bottom-color: #4f46e5; }
         .correct { color: #059669; border-bottom-color: #059669 !important; font-weight: bold; }
         .incorrect { color: #dc2626; border-bottom-color: #dc2626 !important; font-weight: bold; }
@@ -23,7 +23,7 @@
 <body class="text-slate-800">
 
     <div class="flex min-h-screen">
-        <!-- Sidebar -->
+        <!-- Sidebar Điều hướng -->
         <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col sticky top-0 h-screen">
             <div class="p-6">
                 <h1 class="text-xl font-bold text-indigo-600 flex items-center gap-2">
@@ -39,22 +39,27 @@
             <div class="p-6 border-t text-[10px] font-bold text-slate-400 uppercase">Lớp: C25DC1 & LC25BT2</div>
         </aside>
 
-        <!-- Main Content -->
-        <main class="flex-grow p-4 md:p-10">
-            <!-- Dashboard -->
+        <!-- Nội dung chính -->
+        <main class="flex-grow p-4 md:p-10 overflow-y-auto">
+            <!-- Thống kê Tiến độ -->
             <section id="tab-dashboard" class="tab-view active space-y-8">
-                <h2 class="text-3xl font-bold">Tiến độ cá nhân</h2>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900">Chào cô Thanh!</h2>
+                        <p class="text-slate-500">Dưới đây là tiến độ học tập của lớp.</p>
+                    </div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                        <p class="text-xs text-slate-400 font-bold uppercase">Bài tập 1</p>
+                        <p class="text-xs text-slate-400 font-bold uppercase">Bài tập 1 (20 câu)</p>
                         <h3 class="text-3xl font-black" id="stat-ex1">0/20</h3>
                     </div>
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                        <p class="text-xs text-slate-400 font-bold uppercase">Bài tập 2</p>
+                        <p class="text-xs text-slate-400 font-bold uppercase">Bài tập 2 (10 câu)</p>
                         <h3 class="text-3xl font-black" id="stat-ex2">0/10</h3>
                     </div>
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                        <p class="text-xs text-slate-400 font-bold uppercase">Bài tập 3</p>
+                        <p class="text-xs text-slate-400 font-bold uppercase">Bài tập 3 (Story)</p>
                         <h3 class="text-3xl font-black" id="stat-ex3">0/20</h3>
                     </div>
                 </div>
@@ -63,24 +68,17 @@
                 </div>
             </section>
 
-            <!-- Practice Tab -->
+            <!-- Bài tập 3: Story Time -->
             <section id="tab-practice" class="tab-view space-y-8">
                 <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold">Bài tập 3: Story Time (20 chỗ trống)</h3>
-                        <button onclick="checkEx3()" class="bg-emerald-600 text-white px-6 py-2 rounded-xl text-sm font-bold">Kiểm tra</button>
+                        <h3 class="text-xl font-bold text-indigo-600 uppercase">Bài tập 3: Story Time (20 Blanks)</h3>
+                        <button onclick="checkEx3()" class="bg-emerald-600 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-lg shadow-emerald-100">Kiểm tra kết quả</button>
                     </div>
-                    <div id="story-container" class="leading-loose text-justify text-slate-700 italic">
-                        <!-- Story injected by JS -->
+                    <div id="story-container" class="leading-loose text-justify text-slate-700 italic text-lg p-6 bg-slate-50 rounded-2xl">
+                        <!-- Nội dung câu chuyện sẽ được JS chèn vào -->
                     </div>
                 </div>
-            </section>
-            
-            <!-- Game Tab (Rút gọn cho Thầy cô dễ dùng) -->
-            <section id="tab-game" class="tab-view text-center py-20">
-                <h2 class="text-4xl font-black mb-6">Trò chơi đang sẵn sàng!</h2>
-                <p class="text-slate-500 mb-10">Nhấn nút bên dưới để bắt đầu thử thách 30 câu hỏi.</p>
-                <button class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold shadow-xl">BẮT ĐẦU CHƠI</button>
             </section>
         </main>
     </div>
@@ -99,7 +97,7 @@
         window.onload = function() {
             let storyHtml = STORY_RAW;
             for(let i=0; i<20; i++) {
-                storyHtml = storyHtml.replace(`[${i+1}]`, `<input type="text" id="ex3-in-${i}" class="w-24 text-center bg-transparent border-b-2 border-slate-300 font-bold text-emerald-600 mx-1" placeholder="?">`);
+                storyHtml = storyHtml.replace(`[${i+1}]`, `<input type="text" id="ex3-in-${i}" class="w-28 text-center bg-transparent border-b-2 border-slate-300 font-bold text-indigo-600 mx-1" placeholder="?">`);
             }
             document.getElementById('story-container').innerHTML = storyHtml;
 
@@ -108,9 +106,9 @@
                 type: 'bar',
                 data: {
                     labels: ['Bài 1', 'Bài 2', 'Bài 3', 'Game'],
-                    datasets: [{ label: 'Điểm số', data: [15, 8, 18, 25], backgroundColor: '#4f46e5', borderRadius: 10 }]
+                    datasets: [{ label: 'Số câu đúng', data: [15, 8, 18, 25], backgroundColor: '#4f46e5', borderRadius: 10 }]
                 },
-                options: { maintainAspectRatio: false }
+                options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 30 } } }
             });
         };
 
@@ -120,13 +118,13 @@
                 const inp = document.getElementById(`ex3-in-${i}`);
                 if(inp.value.trim().toLowerCase() === ans.toLowerCase()) {
                     score++;
-                    inp.className = "w-24 text-center bg-transparent correct mx-1";
+                    inp.className = "w-28 text-center bg-transparent correct mx-1";
                 } else {
-                    inp.className = "w-24 text-center bg-transparent incorrect mx-1";
+                    inp.className = "w-28 text-center bg-transparent incorrect mx-1";
                 }
             });
             document.getElementById('stat-ex3').innerText = `${score}/20`;
-            alert(`Kết quả Story: ${score}/20 câu đúng!`);
+            alert(`Kết quả Story: Cô đã hoàn thành ${score}/20 câu đúng!`);
         }
     </script>
 </body>
