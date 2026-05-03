@@ -6,86 +6,101 @@
     <title>Grammar Hub | C25DC1 & LC25BT2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Thư viện tạo mã QR tự động -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Quicksand', sans-serif; background-color: #fdfbf7; font-size: 1.2rem; }
+        body { font-family: 'Quicksand', sans-serif; background-color: #fdfbf7; font-size: 1.1rem; }
         .sidebar-item.active { background-color: #f3f4f6; color: #4f46e5; border-right: 4px solid #4f46e5; }
         .tab-view { display: none; }
         .tab-view.active { display: block; animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        input[type="text"] { border-bottom: 2px solid #e2e8f0; outline: none; background: transparent; padding: 5px; }
+        input[type="text"] { border-bottom: 2px solid #e2e8f0; outline: none; background: transparent; padding: 2px; }
         .correct { color: #059669; border-bottom-color: #059669 !important; font-weight: bold; }
         .incorrect { color: #dc2626; border-bottom-color: #dc2626 !important; font-weight: bold; }
-        .theory-card { border-left: 8px solid; padding: 20px; border-radius: 15px; margin-bottom: 20px; background: #fff; }
     </style>
 </head>
 <body class="text-slate-800">
 
     <div class="flex min-h-screen">
         <!-- Sidebar -->
-        <aside class="w-72 bg-white border-r border-slate-200 hidden md:flex flex-col sticky top-0 h-screen">
-            <div class="p-8 text-center">
-                <h1 class="text-2xl font-bold text-indigo-600 mb-6">GRAMMAR HUB</h1>
-                <!-- Nơi hiển thị mã QR tự động -->
-                <div id="qrcode" class="flex justify-center p-2 bg-white border-2 border-slate-100 rounded-xl shadow-inner"></div>
-                <p class="text-[10px] font-bold text-slate-400 mt-4 uppercase">Quét mã để làm bài</p>
+        <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col sticky top-0 h-screen">
+            <div class="p-6 text-center">
+                <h1 class="text-xl font-bold text-indigo-600 mb-4 uppercase">Grammar Hub</h1>
+                <div id="qrcode" class="flex justify-center p-2 bg-white border rounded-xl mb-2"></div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Quét mã làm bài</p>
             </div>
             <nav class="flex-grow">
-                <button onclick="showTab('dashboard')" class="sidebar-item w-full text-left px-8 py-5 flex items-center gap-3 active" id="btn-dashboard">📊 TỔNG QUAN</button>
-                <button onclick="showTab('lessons')" class="sidebar-item w-full text-left px-8 py-5 flex items-center gap-3" id="btn-lessons">📖 LÝ THUYẾT</button>
-                <button onclick="showTab('practice')" class="sidebar-item w-full text-left px-8 py-5 flex items-center gap-3" id="btn-practice">✍️ LUYỆN TẬP</button>
+                <button onclick="showTab('dashboard')" class="sidebar-item w-full text-left px-6 py-4 active" id="btn-dashboard">📊 Tổng quan</button>
+                <button onclick="showTab('lessons')" class="sidebar-item w-full text-left px-6 py-4" id="btn-lessons">📖 Lý thuyết</button>
+                <button onclick="showTab('practice')" class="sidebar-item w-full text-left px-6 py-4" id="btn-practice">✍️ Luyện tập (3 bài)</button>
+                <button onclick="showTab('game')" class="sidebar-item w-full text-left px-6 py-4" id="btn-game">🎮 Thử thách 30 câu</button>
             </nav>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-grow p-6 md:p-12 overflow-y-auto">
-            <section id="tab-dashboard" class="tab-view active space-y-10">
-                <div class="bg-indigo-600 text-white p-10 rounded-[2.5rem] shadow-xl">
-                    <h2 class="text-4xl mb-2 font-bold uppercase">Lý Tú Thanh</h2>
-                    <p class="opacity-80 text-lg">Hệ thống bài giảng dành cho lớp C25DC1 & LC25BT2</p>
+        <main class="flex-grow p-6 md:p-10 overflow-y-auto">
+            
+            <!-- Dashboard -->
+            <section id="tab-dashboard" class="tab-view active space-y-6">
+                <div class="bg-indigo-600 text-white p-8 rounded-3xl shadow-lg">
+                    <h2 class="text-2xl font-bold uppercase">Lý Tú Thanh - Dashboard</h2>
+                    <p class="opacity-80">Lớp: C25DC1 & LC25BT2</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white p-8 rounded-3xl shadow-md border border-slate-100">
-                        <p class="text-sm text-slate-400 font-bold uppercase">Trạng thái bài tập 3</p>
-                        <h3 class="text-4xl font-black" id="stat-ex3">0/20</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border shadow-sm text-center">
+                        <p class="text-xs font-bold text-slate-400 uppercase">Trạng thái bài tập</p>
+                        <h3 class="text-2xl font-black">SẴN SÀNG</h3>
                     </div>
-                    <div class="bg-white p-8 rounded-3xl shadow-md border border-slate-100">
-                        <p class="text-sm text-slate-400 font-bold uppercase">Thử thách Quiz</p>
-                        <h3 class="text-4xl font-black">30 CÂU</h3>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tab-lessons" class="tab-view space-y-10">
-                <h2 class="text-3xl font-black text-slate-900 border-b-4 border-indigo-600 inline-block pb-2">Tính từ bất quy tắc</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="theory-card border-indigo-500">
-                        <h3 class="text-xl text-indigo-700 mb-4 font-bold">SO SÁNH HƠN</h3>
-                        <ul class="space-y-4">
-                            <li><strong>Good</strong> ➔ <span class="text-indigo-600 font-bold">Better</span></li>
-                            <li><strong>Bad</strong> ➔ <span class="text-indigo-600 font-bold">Worse</span></li>
-                        </ul>
+                    <div class="bg-white p-6 rounded-2xl border shadow-sm text-center">
+                        <p class="text-xs font-bold text-slate-400 uppercase">Thử thách 30 câu</p>
+                        <h3 class="text-2xl font-black text-indigo-600">LIVE NOW</h3>
                     </div>
                 </div>
             </section>
 
-            <section id="tab-practice" class="tab-view space-y-10">
-                <div class="bg-white p-10 rounded-[2.5rem] shadow-lg border border-slate-100">
-                    <div class="flex justify-between items-center mb-10">
-                        <h3 class="text-2xl font-bold text-indigo-600">STORY TIME (20 CHỖ TRỐNG)</h3>
-                        <button onclick="checkEx3()" class="bg-emerald-600 text-white px-10 py-4 rounded-2xl font-black shadow-lg">KIỂM TRA</button>
+            <!-- Lessons -->
+            <section id="tab-lessons" class="tab-view space-y-6">
+                <h2 class="text-2xl font-bold border-b-4 border-indigo-600 inline-block">Tính từ bất quy tắc</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border-l-8 border-indigo-500 shadow-sm">
+                        <h3 class="font-bold text-indigo-700 mb-2">Comparative</h3>
+                        <p>Good ➔ Better</p>
+                        <p>Bad ➔ Worse</p>
                     </div>
-                    <div id="story-container" class="leading-relaxed text-justify text-slate-700 italic text-2xl p-10 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200"></div>
+                    <div class="bg-white p-6 rounded-2xl border-l-8 border-emerald-500 shadow-sm">
+                        <h3 class="font-bold text-emerald-700 mb-2">Superlative</h3>
+                        <p>Good ➔ The Best</p>
+                        <p>Bad ➔ The Worst</p>
+                    </div>
                 </div>
             </section>
+
+            <!-- Practice -->
+            <section id="tab-practice" class="tab-view space-y-8">
+                <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-indigo-600 uppercase">Bài tập: Story Time (20 câu)</h3>
+                        <button onclick="checkEx3()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Kiểm tra</button>
+                    </div>
+                    <div id="story-container" class="leading-relaxed italic text-slate-700 bg-slate-50 p-4 rounded-xl"></div>
+                </div>
+            </section>
+
+            <!-- Game -->
+            <section id="tab-game" class="tab-view space-y-6 text-center py-10">
+                <div class="max-w-xl mx-auto space-y-6">
+                    <h2 class="text-3xl font-black">🎮 THỬ THÁCH MASTER 30 CÂU</h2>
+                    <p class="text-slate-500">Hãy chứng minh kỹ năng so sánh của bạn!</p>
+                    <button class="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-bold text-xl shadow-xl hover:scale-105 transition">BẮT ĐẦU NGAY</button>
+                </div>
+            </section>
+
         </main>
     </div>
 
     <script>
         const STORY_ANSWERS = ["worst", "later", "colder", "more crowded", "most frustrating", "farther", "more tired", "tallest", "angrier", "most reliable", "sadder", "cheapest", "worse", "more stressful", "most important", "more exhausted", "most beautiful", "better", "most difficult", "brighter"];
-        const STORY_RAW = "Yesterday was the (1. bad) [1] day of my life. I woke up (2. late) [2] than usual. The weather was (3. cold) [3] than it had been all week. I took the bus, but it was (4. crowded) [4] than a Sunday bus. The (5. frustrating) [5] part was khi xe buýt bị hỏng. I had to walk, and the (6. far) [6] I walked, the (7. tired) [7] I became. My office is in the (8. tall) [8] building in the city. When I arrived, my boss was (9. angry) [9] than a bear. He said I was the (10. reliable) [10] worker he had. I felt (11. sad) [11] than ever. At lunch, I bought the (12. cheap) [12] sandwich, but it tasted (13. awful) [13] than cardboard. The afternoon was even (14. stressful) [14]. I had to finish the (15. important) [15] report of the year. By 5 PM, I was (16. exhausted) [16] than my colleagues. On my way home, I saw the (17. beautiful) [17] sunset, which made me feel a bit (18. good) [18]. I realized that even the (19. difficult) [19] days end eventually. Tomorrow will be (20. bright) [20]!";
+        const STORY_RAW = "Yesterday was the (1. bad) [1] day of my life. I woke up (2. late) [2] than usual. The weather was (3. cold) [3] than it had been all week. I took the bus, but it was (4. crowded) [4] than a Sunday bus. The (5. frustrating) [5] part was when the bus broke down. I had to walk, and the (6. far) [6] I walked, the (7. tired) [7] I became. My office is in the (8. tall) [8] building in the city. When I arrived, my boss was (9. angry) [9] than a bear. He said I was the (10. reliable) [10] worker he had. I felt (11. sad) [11] than ever. At lunch, I bought the (12. cheap) [12] sandwich, but it tasted (13. awful) [13] than cardboard. The afternoon was even (14. stressful) [14]. I had to finish the (15. important) [15] report of the year. By 5 PM, I was (16. exhausted) [16] than my colleagues. On my way home, I saw the (17. beautiful) [17] sunset, which made me feel a bit (18. good) [18]. I realized that even the (19. difficult) [19] days end eventually. Tomorrow will be (20. bright) [20]!";
 
         function showTab(tabId) {
             document.querySelectorAll('.tab-view').forEach(t => t.classList.remove('active'));
@@ -95,33 +110,21 @@
         }
 
         window.onload = function() {
-            // Tự động tạo mã QR cho đường link hiện tại
-            new QRCode(document.getElementById("qrcode"), {
-                text: window.location.href,
-                width: 128,
-                height: 128
-            });
-
+            new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 120, height: 120 });
             let storyHtml = STORY_RAW;
             for(let i=0; i<20; i++) {
-                storyHtml = storyHtml.replace(`[${i+1}]`, `<input type="text" id="ex3-in-${i}" class="w-36 text-center bg-transparent border-b-4 border-indigo-300 font-bold text-indigo-700 mx-2" placeholder="?">`);
+                storyHtml = storyHtml.replace(`[${i+1}]`, `<input type="text" id="ex3-in-${i}" class="w-24 text-center border-b border-indigo-300 font-bold text-indigo-700" placeholder="?">`);
             }
             document.getElementById('story-container').innerHTML = storyHtml;
         };
 
         function checkEx3() {
-            let score = 0;
             STORY_ANSWERS.forEach((ans, i) => {
                 const inp = document.getElementById(`ex3-in-${i}`);
-                if(inp.value.trim().toLowerCase() === ans.toLowerCase()) {
-                    score++;
-                    inp.className = "w-36 text-center bg-transparent correct mx-2";
-                } else {
-                    inp.className = "w-36 text-center bg-transparent incorrect mx-2";
-                }
+                if(inp.value.trim().toLowerCase() === ans.toLowerCase()) { inp.className = "w-24 text-center correct"; }
+                else { inp.className = "w-24 text-center incorrect"; }
             });
-            document.getElementById('stat-ex3').innerText = `${score}/20`;
-            alert(`Kết quả: ${score}/20 câu đúng!`);
+            alert("Đã kiểm tra xong bài tập!");
         }
     </script>
 </body>
