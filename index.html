@@ -3,120 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grammar Hub | C25DC1 & LC25BT2</title>
+    <title>Quản Lý Grammar Hub | Lý Tú Thanh</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Quicksand', sans-serif; background-color: #f0f4f8; }
         .tab-view { display: none; }
-        .tab-view.active { display: block; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        input[type="text"] { border: 2px solid #cbd5e1; border-radius: 8px; padding: 8px; width: 100%; font-weight: bold; color: #4f46e5; outline: none; }
-        .correct { background-color: #d1fae5 !important; color: #065f46; border-color: #10b981 !important; }
-        .incorrect { background-color: #fee2e2 !important; color: #991b1b; border-color: #ef4444 !important; }
+        .tab-view.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .locked { filter: blur(2px); pointer-events: none; opacity: 0.6; }
+        input[type="text"] { border: 1px solid #cbd5e1; border-radius: 5px; padding: 5px; width: 100px; text-align: center; }
+        .correct { background-color: #d1fae5; color: #065f46; }
+        .incorrect { background-color: #fee2e2; color: #991b1b; }
     </style>
 </head>
 <body class="p-4">
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-md text-center space-y-6">
-            <h2 class="text-2xl font-bold text-indigo-600 uppercase">Thông tin học sinh</h2>
-            <input type="text" id="student-name" class="border-2 border-indigo-100 p-4 rounded-2xl w-full text-center" placeholder="Nhập Họ và Tên của em">
-            <select id="student-class" class="w-full p-4 border-2 border-slate-200 rounded-2xl font-bold text-slate-600">
-                <option value="">-- Chọn lớp học --</option>
+    <!-- HEADER & QUẢN TRỊ -->
+    <div class="max-w-4xl mx-auto flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-indigo-700 uppercase">Grammar Hub 4.0</h1>
+        <button onclick="openAdmin()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-lg">🛡️ QUẢN TRỊ</button>
+    </div>
+
+    <!-- KHU VỰC ĐĂNG NHẬP (NỔI LÊN KHI CẦN) -->
+    <div id="login-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-3xl w-full max-w-sm text-center space-y-4 shadow-2xl">
+            <h2 class="font-bold text-xl uppercase">Đăng nhập để làm bài</h2>
+            <input type="text" id="st-name" class="w-full p-3 border rounded-xl mb-2" placeholder="Họ và Tên">
+            <select id="st-class" class="w-full p-3 border rounded-xl font-bold">
+                <option value="">-- Chọn lớp --</option>
                 <option value="C25DC1">C25DC1</option>
                 <option value="LC25BT2">LC25BT2</option>
             </select>
-            <button onclick="startApp()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg">BẮT ĐẦU</button>
+            <button onclick="confirmLogin()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">XÁC NHẬN</button>
+            <button onclick="closeLogin()" class="text-slate-400 text-sm">Hủy bỏ</button>
         </div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="main-app" class="hidden space-y-6">
-        <div class="bg-indigo-600 text-white p-6 rounded-3xl shadow-xl flex justify-between items-center">
+    <!-- MAIN CONTENT (HIỆN ĐẦY ĐỦ NGAY TỪ ĐẦU) -->
+    <div class="max-w-4xl mx-auto space-y-6">
+        <!-- Dashboard Thông tin -->
+        <div class="bg-white p-6 rounded-3xl shadow-md border-l-8 border-indigo-600 flex justify-between items-center">
             <div>
-                <h2 id="display-name" class="font-bold text-xl uppercase"></h2>
-                <p id="display-class" class="text-xs opacity-80 font-bold"></p>
+                <p class="text-xs font-bold text-slate-400 uppercase">Giáo viên phụ trách</p>
+                <h2 class="text-xl font-black uppercase">Lý Tú Thanh</h2>
+                <div id="user-status" class="mt-2 text-indigo-600 font-bold text-sm italic">Học sinh chưa đăng nhập</div>
             </div>
-            <div id="qrcode"></div>
+            <div id="qrcode" class="p-2 bg-white border rounded-lg"></div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="bg-white p-2 rounded-xl border border-indigo-100"><p class="text-[10px] font-bold">BÀI 1</p><p id="score-ex1" class="text-indigo-600 font-bold">--</p></div>
-            <div class="bg-white p-2 rounded-xl border border-indigo-100"><p class="text-[10px] font-bold">BÀI 2</p><p id="score-ex2" class="text-indigo-600 font-bold">--</p></div>
-            <div class="bg-white p-2 rounded-xl border border-indigo-100"><p class="text-[10px] font-bold">BÀI 3</p><p id="score-ex3" class="text-indigo-600 font-bold">--</p></div>
-        </div>
+        <!-- Nội dung bài tập (Luôn hiện để xem) -->
+        <section class="bg-white p-6 rounded-3xl shadow-lg border">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-indigo-600 uppercase">Bài tập: Story Time (Hệ điểm 10)</h3>
+                <div id="lock-btn-area">
+                    <button onclick="showLogin()" class="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold animate-pulse">ĐĂNG NHẬP ĐỂ LÀM</button>
+                </div>
+            </div>
 
-        <!-- NAVIGATION -->
-        <div class="grid grid-cols-3 gap-2">
-            <button onclick="showTab('ex1')" class="bg-white p-3 rounded-xl border-2 border-indigo-100 font-bold text-xs uppercase shadow-sm">Luyện 1</button>
-            <button onclick="showTab('ex2')" class="bg-white p-3 rounded-xl border-2 border-indigo-100 font-bold text-xs uppercase shadow-sm">Luyện 2</button>
-            <button onclick="showTab('ex3')" class="bg-white p-3 rounded-xl border-2 border-indigo-100 font-bold text-xs uppercase shadow-sm">Luyện 3</button>
-        </div>
-
-        <!-- EXERCISE SECTIONS (Các phần bài tập giữ nguyên cấu trúc trước của cô) -->
-        <section id="tab-ex3" class="tab-view active space-y-4">
-            <div class="bg-white p-6 rounded-3xl shadow-md border-t-8 border-emerald-500">
-                <h3 class="font-bold text-emerald-600 mb-4 uppercase">Bài 3: Story Time (Quy đổi hệ 10)</h3>
-                <div id="ex3-container" class="leading-loose italic text-slate-700 bg-slate-50 p-4 rounded-xl text-sm text-justify"></div>
-                <button onclick="checkEx3()" class="w-full mt-6 bg-emerald-600 text-white py-4 rounded-xl font-black shadow-lg uppercase">Kết thúc & Chấm điểm</button>
+            <!-- Bài tập sẽ bị khóa/mở dựa trên trạng thái đăng nhập -->
+            <div id="exercise-content" class="locked leading-relaxed italic text-slate-700 bg-slate-50 p-6 rounded-2xl text-justify">
+                <!-- Nội dung bài tập 3 của cô sẽ ở đây -->
+                Yesterday was the (bad) [1] day of my life...
             </div>
         </section>
     </div>
 
-    <script>
-        const EX3_ANS = ["worst", "later", "colder", "more crowded", "most frustrating", "farther", "more tired", "tallest", "angrier", "most reliable", "sadder", "cheapest", "worse", "more stressful", "most important", "more exhausted", "most beautiful", "better", "most difficult", "brighter"];
-        const EX3_RAW = "Yesterday was the (1. bad) [1] day of my life... [Nội dung bài 3 của cô]";
+    <!-- TRANG ADMIN (ẨN) -->
+    <div id="admin-panel" class="fixed inset-0 bg-white z-[60] hidden overflow-hidden flex flex-col">
+        <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
+            <h2 class="font-bold uppercase tracking-widest">Bảng điểm tổng quát - Admin</h2>
+            <button onclick="closeAdmin()" class="bg-red-500 px-4 py-1 rounded">Đóng</button>
+        </div>
+        <!-- Link Google Sheets của cô sẽ dán vào đây -->
+        <iframe src="ĐƯỜNG_DẪN_GOOGLE_SHEET_CỦA_CÔ" class="flex-grow w-full border-none"></iframe>
+    </div>
 
-        function startApp() {
-            const name = document.getElementById('student-name').value.trim();
-            const className = document.getElementById('student-class').value;
-            if(!name || !className) return alert("Nhập tên và chọn lớp nhé!");
-            document.getElementById('display-name').innerText = name;
-            document.getElementById('display-class').innerText = "Lớp: " + className;
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
+    <script>
+        // Logic điều khiển
+        function showLogin() { document.getElementById('login-modal').classList.remove('hidden'); }
+        function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
+
+        function confirmLogin() {
+            const name = document.getElementById('st-name').value;
+            const cls = document.getElementById('st-class').value;
+            if(!name || !cls) return alert("Vui lòng điền đủ thông tin!");
+            
+            // Mở khóa nội dung
+            document.getElementById('exercise-content').classList.remove('locked');
+            document.getElementById('user-status').innerText = `Học sinh: ${name} - Lớp: ${cls}`;
+            document.getElementById('lock-btn-area').innerHTML = `<button onclick="submitScore()" class="bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold">CHẤM ĐIỂM & GỬI KẾT QUẢ</button>`;
+            closeLogin();
         }
+
+        function openAdmin() {
+            const pass = prompt("Nhập mã bảo mật dành cho giáo viên:");
+            if(pass === "1234") { // Cô đổi mật khẩu ở đây
+                document.getElementById('admin-panel').classList.remove('hidden');
+            } else {
+                alert("Sai mã bảo mật!");
+            }
+        }
+        function closeAdmin() { document.getElementById('admin-panel').classList.add('hidden'); }
 
         window.onload = function() {
-            new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 60, height: 60 });
-            let storyHtml = EX3_RAW;
-            for(let i=0; i<20; i++) {
-                storyHtml = storyHtml.replace(`[${i+1}]`, `<input type="text" id="ex3-in-${i}" style="width:80px; border-bottom:1px solid #6366f1; border-radius:0; padding:0" placeholder="?">`);
-            }
-            document.getElementById('ex3-container').innerHTML = storyHtml;
+            new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 64, height: 64 });
         };
-
-        function showTab(id) {
-            document.querySelectorAll('.tab-view').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + id).classList.add('active');
-        }
-
-        // HÀM TÍNH ĐIỂM QUY ĐỔI HỆ 10
-        function calculateScale10(correct, total) {
-            return ((correct / total) * 10).toFixed(1);
-        }
-
-        function checkEx3() {
-            let correct = 0;
-            EX3_ANS.forEach((ans, i) => {
-                const inp = document.getElementById(`ex3-in-${i}`);
-                if(inp.value.trim().toLowerCase() === ans.toLowerCase()) {
-                    correct++;
-                    inp.className = "correct";
-                } else {
-                    inp.className = "incorrect";
-                }
-            });
-
-            // Tính điểm bình quân thang điểm 10
-            const score10 = calculateScale10(correct, 20);
-            document.getElementById('score-ex3').innerText = score10 + "/10";
-            
-            alert(`Kết quả bài làm:\n- Số câu đúng: ${correct}/20\n- Điểm quy đổi: ${score10} điểm`);
-        }
     </script>
 </body>
 </html>
